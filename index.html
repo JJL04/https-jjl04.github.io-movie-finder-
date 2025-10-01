@@ -64,22 +64,92 @@
   <!-- Embedded movies data to allow opening index.html via file:// without a server -->
   <script id="movies-data" type="application/json">
 [
-  { "title": "Spider-Man: No Way Home", "year": "2021", "rating": "8.3", "poster": "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" },
-  { "title": "Spider-Man: Into the Spider-Verse", "year": "2018", "rating": "8.4", "poster": "https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg" },
-  { "title": "Avengers: Endgame", "year": "2019", "rating": "8.4", "poster": "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg" },
-  { "title": "Iron Man", "year": "2008", "rating": "7.9", "poster": "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg" },
-  { "title": "Black Panther", "year": "2018", "rating": "7.3", "poster": "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg" },
-  { "title": "Guardians of the Galaxy", "year": "2014", "rating": "8.0", "poster": "https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg" },
-  { "title": "Dragon Ball Super: Broly", "year": "2018", "rating": "7.7", "poster": "https://image.tmdb.org/t/p/w500/f03YksE4NggUjG75toz4H1YAGRf.jpg" },
-  { "title": "Dragon Ball Super: Super Hero", "year": "2022", "rating": "7.1", "poster": "https://image.tmdb.org/t/p/w500/rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg" },
-  { "title": "The Flash", "year": "2023", "rating": "7.0", "poster": "https://image.tmdb.org/t/p/w500/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg" },
-  { "title": "The Flash (TV Series)", "year": "2014–2023", "rating": "7.6", "poster": "https://image.tmdb.org/t/p/w500/lJA2RCMfsWoskqlQhXPSLFQGXEJ.jpg" },
-  { "title": "Justice League", "year": "2017", "rating": "6.1", "poster": "https://image.tmdb.org/t/p/w500/eifGNCSDuxJeS1loAXil5bIGgvC.jpg" },
-  { "title": "Wonder Woman", "year": "2017", "rating": "7.4", "poster": "https://image.tmdb.org/t/p/w500/gfJGlDaHuWimErCr5Ql0I8x9QSy.jpg" },
-  { "title": "Batman v Superman: Dawn of Justice", "year": "2016", "rating": "6.4", "poster": "https://image.tmdb.org/t/p/w500/5UsK3grJvtQrtzEgqNlDljJW96w.jpg" },
-  { "title": "The Dark Knight", "year": "2008", "rating": "9.0", "poster": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" }
+  {
+    "title": "Spider-Man: No Way Home",
+    "year": "2021",
+    "rating": "8.3",
+    "poster": "posters/spider-man-no-way-home.jpg"
+  },
+  {
+    "title": "Spider-Man: Into the Spider-Verse",
+    "year": "2018",
+    "rating": "8.4",
+    "poster": "posters/spider-man-into-the-spider-verse.jpg"
+  },
+  {
+    "title": "Avengers: Endgame",
+    "year": "2019",
+    "rating": "8.4",
+    "poster": "posters/avengers-endgame.jpg"
+  },
+  {
+    "title": "Iron Man",
+    "year": "2008",
+    "rating": "7.9",
+    "poster": "posters/iron-man.jpg"
+  },
+  {
+    "title": "Black Panther",
+    "year": "2018",
+    "rating": "7.3",
+    "poster": "posters/black-panther.jpg"
+  },
+  {
+    "title": "Guardians of the Galaxy",
+    "year": "2014",
+    "rating": "8.0",
+    "poster": "posters/guardians-of-the-galaxy.jpg"
+  },
+  {
+    "title": "Dragon Ball Super: Broly",
+    "year": "2018",
+    "rating": "7.7",
+    "poster": "posters/dragon-ball-super-broly.jpg"
+  },
+  {
+    "title": "Dragon Ball Super: Super Hero",
+    "year": "2022",
+    "rating": "7.1",
+    "poster": "posters/dragon-ball-super-super-hero.jpg"
+  },
+  {
+    "title": "The Flash",
+    "year": "2023",
+    "rating": "7.0",
+    "poster": "posters/the-flash.jpg"
+  },
+  {
+    "title": "The Flash (TV Series)",
+    "year": "2014–2023",
+    "rating": "7.6",
+    "poster": "posters/the-flash-tv-series.jpg"
+  },
+  {
+    "title": "Justice League",
+    "year": "2017",
+    "rating": "6.1",
+    "poster": "posters/justice-league.jpg"
+  },
+  {
+    "title": "Wonder Woman",
+    "year": "2017",
+    "rating": "7.4",
+    "poster": "posters/wonder-woman.jpg"
+  },
+  {
+    "title": "Batman v Superman: Dawn of Justice",
+    "year": "2016",
+    "rating": "6.4",
+    "poster": "posters/batman-v-superman-dawn-of-justice.jpg"
+  },
+  {
+    "title": "The Dark Knight",
+    "year": "2008",
+    "rating": "9.0",
+    "poster": "posters/the-dark-knight.jpg"
+  }
 ]
-  </script>
+</script>
   <h1>🎬 Movie Finder</h1>
   <input type="text" id="searchBox" placeholder="Search for a movie..." />
   <div id="results"></div>
