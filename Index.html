@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #ffcc00;
+    }
+    .search-box {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    input {
+      padding: 10px;
+      width: 300px;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+      background: #ffcc00;
+      cursor: pointer;
+    }
+    .movies {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .movie {
+      background: #1e1e1e;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+    }
+    .movie:hover {
+      transform: scale(1.05);
+    }
+    .movie img {
+      width: 100%;
+      display: block;
+    }
+    .movie-details {
+      padding: 10px;
+    }
+    .movie-details h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #ffcc00;
+    }
+    .movie-details p {
+      font-size: 14px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎥 Movie Finder</h1>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search for a movie...">
+    <button onclick="doSearch()">Search</button>
+  </div>
+
+  <div id="results" class="movies"></div>
+
+  <script>
+    // 🔑 Replace with your TMDb API key
+    const TMDB_API_KEY = "PUT_YOUR_TMDB_API_KEY_HERE";
+    const IMG_BASE = "https://image.tmdb.org/t/p/w500";
+
+    async function searchTMDB(query) {
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data.results || [];
+      } catch (err) {
+        console.error("❌ TMDb search failed:", err.message);
+        alert("Search failed: " + err.message);
+        return [];
+      }
+    }
+
+    async function doSearch() {
+      const query = document.getElementById("searchInput").value.trim();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "<p>Loading...</p>";
+
+      if (!query) {
+        resultsDiv.innerHTML = "<p>Please enter a search term.</p>";
+        return;
+      }
+
+      const movies = await searchTMDB(query);
+
+      if (movies.length === 0) {
+        resultsDiv.innerHTML = "<p>No results found.</p>";
+        return;
+      }
+
+      resultsDiv.innerHTML = movies.map(movie => `
+        <div class="movie">
+          <img src="${movie.poster_path ? IMG_BASE + movie.poster_path : 'https://via.placeholder.com/500x750?text=No+Image'}" alt="${movie.title}">
+          <div class="movie-details">
+            <h3>${movie.title}</h3>
+            <p>⭐ Rating: ${movie.vote_average}/10</p>
+            <p>${movie.release_date || "Unknown year"}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+  </script>
+</body>
+</html>
