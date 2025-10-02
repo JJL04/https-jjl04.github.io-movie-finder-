@@ -28,6 +28,20 @@
     "plot": "Genius inventor Tony Stark builds an armored suit to escape captivity and becomes Iron Man."
   },
   {
+    "title": "Iron Man 2",
+    "year": "2010",
+    "rating": "7.0",
+    "poster": "posters/iron-man-2.jpg",
+    "plot": "Tony Stark struggles with his legacy and a powerful new enemy while government pressure mounts."
+  },
+  {
+    "title": "Iron Man 3",
+    "year": "2013",
+    "rating": "7.1",
+    "poster": "posters/iron-man-3.jpg",
+    "plot": "Tony confronts a terrorist known as the Mandarin and faces the consequences of past choices."
+  },
+  {
     "title": "Black Panther",
     "year": "2018",
     "rating": "7.3",
