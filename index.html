@@ -264,7 +264,9 @@
       modalTitle.textContent = movie.title;
       modalMeta.innerHTML = `<div>Year: ${movie.year}</div><div>Rating: ${movie.rating}</div>`;
       modalDesc.textContent = movie.plot || '';
-      modalPoster.innerHTML = `<img src="${movie.poster}" alt="${movie.title}" style="width:100%;height:100%;object-fit:cover;border-radius:6px"/>`;
+      // Prefer WebP in modal when available, fall back to original image
+      const modalWebp = movie.poster.replace(/\.[^/.]+$/, '.webp');
+      modalPoster.innerHTML = `<picture><source type="image/webp" srcset="${modalWebp}"><img src="${movie.poster}" alt="${movie.title}" style="width:100%;height:100%;object-fit:cover;border-radius:6px"/></picture>`;
       modalBackdrop.classList.add('show');
       modalBackdrop.setAttribute('aria-hidden','false');
       // trap focus on close button
@@ -289,10 +291,16 @@
       card.setAttribute('aria-pressed', 'false');
       card.setAttribute('aria-label', `${movie.title} (${movie.year}) rated ${movie.rating}`);
 
-      const posterWrap = document.createElement('div'); posterWrap.className='poster';
-      const img = document.createElement('img'); img.src = movie.poster; img.alt = movie.title; img.loading = 'lazy';
-      img.onerror = function(){ this.src = 'https://via.placeholder.com/500x750?text=No+Image'; }
-      posterWrap.appendChild(img);
+  const posterWrap = document.createElement('div'); posterWrap.className='poster';
+  // Use <picture> with WebP source when available for better compression
+  const picture = document.createElement('picture');
+  const webpSrc = movie.poster.replace(/\.[^/.]+$/, '.webp');
+  const source = document.createElement('source'); source.type = 'image/webp'; source.srcset = webpSrc;
+  const img = document.createElement('img'); img.src = movie.poster; img.alt = movie.title; img.loading = 'lazy';
+  img.onerror = function(){ this.src = 'https://via.placeholder.com/500x750?text=No+Image'; }
+  picture.appendChild(source);
+  picture.appendChild(img);
+  posterWrap.appendChild(picture);
 
       const body = document.createElement('div'); body.className='movie-body';
       const title = document.createElement('h3'); title.textContent = movie.title; body.appendChild(title);
