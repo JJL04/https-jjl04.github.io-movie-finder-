@@ -39,12 +39,26 @@
       display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;margin-top:20px;
     }
 
+    /* Modal styles */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.7);display:none;align-items:center;justify-content:center;padding:24px;z-index:1200}
+    .modal{background:linear-gradient(180deg,var(--bg-2),#0a0d10);border-radius:12px;max-width:900px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.7);overflow:hidden}
+    .modal-inner{display:flex;gap:12px;padding:18px}
+    .modal .poster{width:40%;aspect-ratio:2/3;border-radius:8px}
+    .modal h2{margin:0 0 6px 0}
+    .modal .meta{flex-direction:column;align-items:flex-start}
+    .modal .close-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent);padding:8px 10px;border-radius:8px;cursor:pointer}
+    .modal-backdrop.show{display:flex}
+
     .movie{
       background:linear-gradient(180deg,var(--card),transparent);border-radius:12px;padding:10px;text-align:center;
       border:1px solid var(--glass);backdrop-filter: blur(6px);transition:transform .22s ease,box-shadow .22s ease;
       cursor:pointer;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;height:100%;
     }
     .movie:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 18px 40px rgba(2,6,23,0.7),0 6px 18px rgba(0,0,0,0.5)}
+
+  /* Accessibility: visible focus and pressed state */
+  .movie:focus-visible{outline:3px solid rgba(255,204,0,0.18);outline-offset:4px}
+  .movie[aria-pressed="true"]{box-shadow:0 24px 48px rgba(2,6,23,0.75);transform:translateY(-10px) scale(1.03)}
 
     .poster{width:100%;aspect-ratio:2/3;overflow:hidden;border-radius:8px;background:#111}
   .movie img{width:100%;height:100%;object-fit:cover;display:block}
@@ -151,8 +165,23 @@
 ]
 </script>
   <h1>🎬 Movie Finder</h1>
-  <input type="text" id="searchBox" placeholder="Search for a movie..." />
-  <div id="results"></div>
+  <input type="text" id="searchBox" role="search" aria-label="Search movies" placeholder="Search for a movie..." />
+  <div id="results" role="region" aria-live="polite" aria-label="Search results"></div>
+
+  <!-- Modal: movie details -->
+  <div id="movieModalBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div id="movieModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+      <div class="modal-inner">
+        <div class="poster" id="modalPoster"></div>
+        <div style="flex:1">
+          <h2 id="modalTitle"></h2>
+          <div class="meta" id="modalMeta"></div>
+          <p id="modalDesc" style="color:var(--muted);margin-top:12px"></p>
+          <div style="margin-top:12px"><button id="modalClose" class="close-btn">Close</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const results = document.getElementById('results');
@@ -163,9 +192,43 @@
 
     let moviesDB = null;
 
+    // Modal helpers
+    const modalBackdrop = document.getElementById('movieModalBackdrop');
+    const modal = document.getElementById('movieModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMeta = document.getElementById('modalMeta');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalPoster = document.getElementById('modalPoster');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(movie){
+      modalTitle.textContent = movie.title;
+      modalMeta.innerHTML = `<div>Year: ${movie.year}</div><div>Rating: ${movie.rating}</div>`;
+      modalDesc.textContent = movie.plot || '';
+      modalPoster.innerHTML = `<img src="${movie.poster}" alt="${movie.title}" style="width:100%;height:100%;object-fit:cover;border-radius:6px"/>`;
+      modalBackdrop.classList.add('show');
+      modalBackdrop.setAttribute('aria-hidden','false');
+      // trap focus on close button
+      modalClose.focus();
+    }
+
+    function closeModal(){
+      modalBackdrop.classList.remove('show');
+      modalBackdrop.setAttribute('aria-hidden','true');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e)=>{ if(e.target === modalBackdrop) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
     function makeMovieCard(movie){
       const card = document.createElement('div');
       card.className = 'movie';
+      // Accessibility: make the card keyboard-focusable and expose ARIA role/label
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-pressed', 'false');
+      card.setAttribute('aria-label', `${movie.title} (${movie.year}) rated ${movie.rating}`);
 
       const posterWrap = document.createElement('div'); posterWrap.className='poster';
       const img = document.createElement('img'); img.src = movie.poster; img.alt = movie.title; img.loading = 'lazy';
@@ -182,6 +245,18 @@
       body.appendChild(meta);
 
       card.appendChild(posterWrap); card.appendChild(body);
+
+      // Activation opens the details modal
+      card.addEventListener('click', () => { openModal(movie); });
+
+      // Keyboard activation: Enter or Space opens the modal
+      card.addEventListener('keydown', (ev) => {
+        if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+          ev.preventDefault();
+          openModal(movie);
+        }
+      });
+
       return card;
     }
 
