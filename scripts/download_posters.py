@@ -2,8 +2,10 @@
 import json
 import os
 import re
+import time
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
+from urllib.parse import quote
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -25,11 +27,24 @@ def get_ext_from_url(url):
     return '.jpg'
 
 
-def download(url, outpath):
+def download(url, outpath, max_size=5 * 1024 * 1024):
+    """Download URL to outpath with basic validation (content-type image/* and size limit).
+    Returns (ok: bool, error_message_or_None)
+    """
     try:
         req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        with urlopen(req, timeout=30) as r, open(outpath, 'wb') as f:
-            f.write(r.read())
+        with urlopen(req, timeout=30) as r:
+            ctype = r.headers.get('Content-Type', '')
+            if not ctype.startswith('image/'):
+                return False, f'Not an image (Content-Type: {ctype})'
+            length = r.headers.get('Content-Length')
+            if length and int(length) > max_size:
+                return False, f'File too large ({length} bytes)'
+            data = r.read()
+            if len(data) > max_size:
+                return False, f'File too large after download ({len(data)} bytes)'
+            with open(outpath, 'wb') as f:
+                f.write(data)
         return True, None
     except HTTPError as e:
         return False, f'HTTP {e.code}'
@@ -68,26 +83,112 @@ def main():
     POSTERS_DIR.mkdir(parents=True, exist_ok=True)
     changed = False
     for m in movies:
-        url = m.get('poster')
-        title = m.get('title','movie')
+        poster = m.get('poster')
+        title = m.get('title', 'movie')
         name = safe_name(title)
-        ext = get_ext_from_url(url) if isinstance(url, str) else '.jpg'
-        filename = f'{name}{ext}'
-        outpath = POSTERS_DIR / filename
-        if outpath.exists():
-            print('Exists, skipping:', filename)
-            m['poster'] = f'posters/{filename}'
-            continue
-        print('Downloading:', title, '->', outpath)
-        ok, err = download(url, outpath)
-        if not ok:
-            print('Failed:', title, err)
-            # set placeholder remote (not downloading placeholder)
-            m['poster'] = 'https://via.placeholder.com/500x750?text=No+Image'
-            changed = True
+
+        # Skip if poster already a local file that exists and is not the generic placeholder
+        if isinstance(poster, str) and poster.startswith('posters/') and poster != 'posters/no-image.jpg':
+            ppath = ROOT / poster
+            if ppath.exists():
+                print('Local poster exists, skipping:', poster)
+                continue
+
+        # We only attempt to find a poster when the current poster is the placeholder
+        if poster == 'posters/no-image.jpg' or not poster:
+            print(f'Attempting to find poster for: {title}')
+            # Try Wikipedia first
+            try:
+                wiki_title = quote(title.replace(' ', '_'), safe='()')
+                wiki_url = f'https://en.wikipedia.org/wiki/{wiki_title}'
+                print('Fetching', wiki_url)
+                req = Request(wiki_url, headers={'User-Agent': 'Mozilla/5.0'})
+                with urlopen(req, timeout=20) as r:
+                    html = r.read().decode('utf-8', errors='ignore')
+            except Exception as e:
+                print('Could not fetch Wikipedia page for', title, e)
+                html = ''
+
+            image_url = None
+            if html:
+                # Prefer og:image
+                m1 = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
+                if m1:
+                    image_url = m1.group(1)
+                else:
+                    # Look for infobox image
+                    m2 = re.search(r'<table[^>]+class=["\'][^"\']*infobox[^"\']*["\'][\s\S]*?<img[^>]+src=["\']([^"\']+)["\']', html, re.I)
+                    if m2:
+                        image_url = m2.group(1)
+
+            # If we didn't find an image, attempt the "(film)" Wikipedia page (handles disambiguation)
+            if not image_url:
+                try:
+                    film_title = f"{title} (film)"
+                    wiki_title_film = quote(film_title.replace(' ', '_'), safe='()')
+                    wiki_url_film = f'https://en.wikipedia.org/wiki/{wiki_title_film}'
+                    print('Trying film page', wiki_url_film)
+                    req2 = Request(wiki_url_film, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urlopen(req2, timeout=20) as r2:
+                        html2 = r2.read().decode('utf-8', errors='ignore')
+                    m1 = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html2)
+                    if m1:
+                        image_url = m1.group(1)
+                    else:
+                        m2 = re.search(r'<table[^>]+class=["\'][^"\']*infobox[^"\']*["\'][\s\S]*?<img[^>]+src=["\']([^"\']+)["\']', html2, re.I)
+                        if m2:
+                            image_url = m2.group(1)
+                except Exception:
+                    pass
+
+            if image_url:
+                # Normalize protocol-relative URLs
+                if image_url.startswith('//'):
+                    image_url = 'https:' + image_url
+                elif image_url.startswith('/'):  # relative
+                    image_url = 'https://en.wikipedia.org' + image_url
+
+                ext = get_ext_from_url(image_url)
+                filename = f'{name}{ext}'
+                outpath = POSTERS_DIR / filename
+
+                # Retry download a few times
+                attempts = 3
+                for attempt in range(1, attempts + 1):
+                    print(f'Downloading ({attempt}/{attempts}):', image_url)
+                    ok, err = download(image_url, outpath)
+                    if ok:
+                        m['poster'] = f'posters/{filename}'
+                        changed = True
+                        print('Downloaded poster for', title)
+                        break
+                    else:
+                        print('Download failed:', err)
+                        if attempt < attempts:
+                            time.sleep(1 * attempt)
+                else:
+                    print('All attempts failed for', title)
+                    # leave placeholder as-is
+            else:
+                print('No candidate image found for', title)
+                # leave placeholder as-is
         else:
-            m['poster'] = f'posters/{filename}'
-            changed = True
+            # If poster is a remote URL (http/https or protocol-relative), try to download it
+            if isinstance(poster, str) and (poster.startswith('http://') or poster.startswith('https://') or poster.startswith('//')):
+                image_url = poster
+                if image_url.startswith('//'):
+                    image_url = 'https:' + image_url
+                ext = get_ext_from_url(image_url)
+                filename = f'{name}{ext}'
+                outpath = POSTERS_DIR / filename
+                print('Downloading remote poster for', title)
+                ok, err = download(image_url, outpath)
+                if ok:
+                    m['poster'] = f'posters/{filename}'
+                    changed = True
+                else:
+                    print('Failed to download remote poster for', title, err)
+                    # keep existing field
     if changed:
         MOVIES_JSON.write_text(json.dumps(movies, ensure_ascii=False, indent=2), encoding='utf-8')
         print('Updated movies.json to reference local posters')

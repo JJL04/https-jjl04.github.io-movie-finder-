@@ -3,84 +3,147 @@
     "title": "Spider-Man: No Way Home",
     "year": "2021",
     "rating": "8.3",
-    "poster": "posters/spider-man-no-way-home.jpg"
+    "poster": "posters/spider-man-no-way-home.jpg",
+    "plot": "Peter Parker seeks help to reverse the fallout of his identity being revealed, with multiversal consequences."
   },
   {
     "title": "Spider-Man: Into the Spider-Verse",
     "year": "2018",
     "rating": "8.4",
-    "poster": "posters/spider-man-into-the-spider-verse.jpg"
+    "poster": "posters/spider-man-into-the-spider-verse.jpg",
+    "plot": "Teen Miles Morales meets other Spider-heroes from across the multiverse to stop a reality-threatening collider."
   },
   {
     "title": "Avengers: Endgame",
     "year": "2019",
     "rating": "8.4",
-    "poster": "posters/avengers-endgame.jpg"
+    "poster": "posters/avengers-endgame.jpg",
+    "plot": "The surviving heroes assemble on a final mission to undo Thanos' devastation."
   },
   {
     "title": "Iron Man",
     "year": "2008",
     "rating": "7.9",
-    "poster": "posters/iron-man.jpg"
+    "poster": "posters/iron-man.jpg",
+    "plot": "Genius inventor Tony Stark builds an armored suit to escape captivity and becomes Iron Man."
   },
   {
     "title": "Black Panther",
     "year": "2018",
     "rating": "7.3",
-    "poster": "posters/black-panther.jpg"
+    "poster": "posters/black-panther.jpg",
+    "plot": "T'Challa returns home to lead Wakanda while confronting a challenger to the throne."
   },
   {
     "title": "Guardians of the Galaxy",
     "year": "2014",
     "rating": "8.0",
-    "poster": "posters/guardians-of-the-galaxy.jpg"
+    "poster": "posters/guardians-of-the-galaxy.jpg",
+    "plot": "A band of misfits teams up to protect a mysterious orb and become unlikely heroes."
   },
   {
     "title": "Dragon Ball Super: Broly",
     "year": "2018",
     "rating": "7.7",
-    "poster": "posters/dragon-ball-super-broly.jpg"
+    "poster": "posters/dragon-ball-super-broly.jpg",
+    "plot": "Goku and Vegeta face the powerful Saiyan Broly in explosive battles."
   },
   {
     "title": "Dragon Ball Super: Super Hero",
     "year": "2022",
     "rating": "7.1",
-    "poster": "posters/dragon-ball-super-super-hero.jpg"
+    "poster": "posters/dragon-ball-super-super-hero.jpg",
+    "plot": "The heroes confront a new threat from a powerful android program."
   },
   {
     "title": "The Flash",
     "year": "2023",
     "rating": "7.0",
-    "poster": "posters/the-flash.jpg"
+    "poster": "posters/the-flash.jpg",
+    "plot": "Barry Allen navigates time-altering consequences in an effort to save reality."
   },
   {
     "title": "The Flash (TV Series)",
     "year": "2014–2023",
     "rating": "7.6",
-    "poster": "posters/the-flash-tv-series.jpg"
+    "poster": "posters/the-flash-tv-series.jpg",
+    "plot": "Barry Allen fights crime and faces legacy threats while balancing life as the Scarlet Speedster."
   },
   {
     "title": "Justice League",
     "year": "2017",
     "rating": "6.1",
-    "poster": "posters/justice-league.jpg"
+    "poster": "posters/justice-league.jpg",
+    "plot": "Heroes unite to stop a threat that endangers the planet."
   },
   {
     "title": "Wonder Woman",
     "year": "2017",
     "rating": "7.4",
-    "poster": "posters/wonder-woman.jpg"
+    "poster": "posters/wonder-woman.jpg",
+    "plot": "Amazonian princess Diana leaves her island to confront the horrors of World War I."
   },
   {
     "title": "Batman v Superman: Dawn of Justice",
     "year": "2016",
     "rating": "6.4",
-    "poster": "posters/batman-v-superman-dawn-of-justice.jpg"
+    "poster": "posters/batman-v-superman-dawn-of-justice.jpg",
+    "plot": "Tensions rise and a clash between Batman and Superman is manipulated by darker forces."
   },
   {
     "title": "The Dark Knight",
     "year": "2008",
     "rating": "9.0",
-    "poster": "posters/the-dark-knight.jpg"
+    "poster": "posters/the-dark-knight.jpg",
+    "plot": "Batman faces the Joker, whose chaotic schemes push Gotham to the edge."
+  },
+  {
+    "title": "Inception",
+    "year": "2010",
+    "rating": "8.8",
+    "poster": "posters/inception.jpg",
+    "plot": "A thief who steals corporate secrets through dream-sharing technology is tasked with planting an idea."
+  },
+  {
+    "title": "The Matrix",
+    "year": "1999",
+    "rating": "8.7",
+    "poster": "posters/the-matrix.png",
+    "plot": "A hacker discovers reality is a simulation and joins a rebellion to free humanity."
+  },
+  {
+    "title": "Interstellar",
+    "year": "2014",
+    "rating": "8.6",
+    "poster": "posters/interstellar.jpg",
+    "plot": "A team of explorers travel through a wormhole in space to ensure humanity's survival."
+  },
+  {
+    "title": "Back to the Future",
+    "year": "1985",
+    "rating": "8.5",
+    "poster": "posters/back-to-the-future.jpg",
+    "plot": "A teenager is accidentally sent back in time and must ensure his parents meet to save his future."
+  },
+  {
+    "title": "Jurassic Park",
+    "year": "1993",
+    "rating": "8.1",
+    "poster": "posters/jurassic-park.jpg",
+    "plot": "Scientists clone dinosaurs for a theme park, but the experiment goes catastrophically wrong."
+  },
+  {
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "year": "2001",
+    "rating": "8.8",
+    "poster": "posters/the-lord-of-the-rings-the-fellowship-of-the-ring.jpg",
+    "plot": "A hobbit begins a perilous quest to destroy a powerful ring and save Middle-earth."
+  },
+  {
+    "title": "The Shawshank Redemption",
+    "year": "1994",
+    "rating": "9.3",
+    "poster": "posters/the-shawshank-redemption.jpg",
+    "plot": "Two imprisoned men form a friendship and find hope through acts of common decency."
   }
 ]
