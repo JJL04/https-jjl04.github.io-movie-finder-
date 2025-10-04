@@ -20,3 +20,19 @@ Publish with GitHub Pages
 If you still see a 404 after enabling Pages, confirm:
 - The branch and folder selected in Settings -> Pages are correct.
 - There is an `index.html` at the repository root.
+
+## Course submission (WDD 330)
+
+Use the following files to prepare your WDD 330 final submission. Fill in the placeholders with your name, deployed app URL (e.g. Netlify or GitHub Pages), public video link (YouTube/Loom), GitHub repo, and Trello board link.
+
+- `PROFESSIONAL_DEVELOPMENT.md` — Professional development document with evidence table and reflections.
+- `SKILLS_DEVELOPMENT.md` — Skills document with links required by the course (deployed site, repo, Trello, video).
+
+Steps to complete before submission:
+1. Fill in `PROFESSIONAL_DEVELOPMENT.md` and `SKILLS_DEVELOPMENT.md` with your name and public links.
+2. Record a ~5 minute walkthrough video showing the app, the code, and speaking about your choices. Host it publicly (YouTube or Loom).
+3. Confirm your deployed site is publicly accessible (open in an incognito window).
+4. Update your Trello board with progress and link it in the docs.
+5. Upload the two completed markdown files to Canvas as required by the assignment.
+
+If you want, I can generate a short script for your video walkthrough and a sample Trello board template you can import.
