@@ -2,7 +2,7 @@
 
 Instructions: Fill in the tables below with the work you completed for WDD 330. Replace the placeholder text with your own content and links. Use publicly accessible links (GitHub Pages, YouTube/Loom public link, Trello board, GitHub repo URL).
 
-Student name: [YOUR FULL NAME]
+Student name: [Jayden Luke]
 Course: WDD 330 — Web Frontend Development II
 Term: [Term/Year]
 
