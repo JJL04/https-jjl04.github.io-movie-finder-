@@ -46,6 +46,7 @@ main{margin-top:8px}
   background:linear-gradient(180deg,var(--card),transparent);border-radius:12px;padding:10px;text-align:center;
   border:1px solid var(--glass);backdrop-filter: blur(6px);transition:transform .22s ease,box-shadow .22s ease;
   cursor:pointer;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;height:100%;
+  position: relative;
 }
 .movie:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 18px 40px rgba(2,6,23,0.7),0 6px 18px rgba(0,0,0,0.5)}
 
@@ -59,6 +60,36 @@ main{margin-top:8px}
 .movie-body{padding:10px 6px;display:flex;flex-direction:column;gap:6px;align-items:center}
 .movie h3{margin:0;font-size:15px;text-align:center}
 .meta{display:flex;gap:8px;font-size:13px;color:var(--muted)}
+
+/* Favorite (star) button on card */
+.card-fav{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 0;
+  color: var(--muted);
+  font-size: 18px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform .12s ease, color .12s ease, background .12s ease, box-shadow .12s ease;
+}
+.card-fav:hover{
+  color:#ffd166;
+  transform:scale(1.06);
+  background: rgba(255,255,255,0.03);
+}
+.card-fav[aria-pressed="true"]{
+  color: gold;
+  transform: scale(1.04);
+  box-shadow: 0 8px 24px rgba(255,215,0,0.12);
+  background: linear-gradient(90deg, rgba(255, 223, 107, 0.06), rgba(255, 215, 0, 0.02));
+}
+.card-fav:focus-visible{
+  outline:2px solid rgba(255,215,0,0.18);
+  outline-offset:2px;
+}
 
 @media (max-width:520px){
   body{padding:16px}

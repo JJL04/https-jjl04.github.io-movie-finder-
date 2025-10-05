@@ -225,7 +225,12 @@
 </script>
   <h1>🎬 Movie Finder</h1>
   <input type="text" id="searchBox" role="search" aria-label="Search movies" placeholder="Search for a movie..." />
-  <div id="results" role="region" aria-live="polite" aria-label="Search results"></div>
+  <!-- Favorites filter checkbox (non-destructive: only added UI) -->
+  <label style="margin-left:12px;display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:14px">
+    <input type="checkbox" id="showFavs" />
+    Favorites
+  </label>
+   <div id="results" role="region" aria-live="polite" aria-label="Search results"></div>
 
   <!-- Modal: movie details -->
   <div id="movieModalBackdrop" class="modal-backdrop" aria-hidden="true">
@@ -245,11 +250,15 @@
   <script>
     const results = document.getElementById('results');
     const searchBox = document.getElementById('searchBox');
+    const showFavs = document.getElementById('showFavs');
     const loadingNode = document.createElement('p');
     loadingNode.style.textAlign = 'center'; loadingNode.style.color = 'var(--muted)';
     loadingNode.textContent = 'Loading movies...';
 
     let moviesDB = null;
+    // Favorites persisted by movie title (localStorage)
+    let favorites = new Set(JSON.parse(localStorage.getItem('mf_favs') || '[]'));
+    function saveFavorites(){ localStorage.setItem('mf_favs', JSON.stringify(Array.from(favorites))); }
 
     // Modal helpers
     const modalBackdrop = document.getElementById('movieModalBackdrop');
@@ -311,7 +320,22 @@
       meta.appendChild(year); meta.appendChild(rating);
       body.appendChild(meta);
 
-      card.appendChild(posterWrap); card.appendChild(body);
+      // favorite (star) button (non-destructive: adds UI only)
+      const fav = document.createElement('button');
+      fav.className = 'card-fav';
+      fav.title = 'Toggle favorite';
+      fav.innerHTML = favorites.has(movie.title) ? '★' : '☆';
+      fav.setAttribute('aria-pressed', favorites.has(movie.title) ? 'true' : 'false');
+      fav.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (favorites.has(movie.title)) favorites.delete(movie.title);
+        else favorites.add(movie.title);
+        fav.innerHTML = favorites.has(movie.title) ? '★' : '☆';
+        fav.setAttribute('aria-pressed', favorites.has(movie.title) ? 'true' : 'false');
+        saveFavorites();
+      });
+
+      card.appendChild(posterWrap); card.appendChild(body); card.appendChild(fav);
 
       // Activation opens the details modal
       card.addEventListener('click', () => { openModal(movie); });
@@ -359,12 +383,22 @@
       displayMovies(moviesDB);
     }
 
+    // enhanced search + favorites filter (preserves your moviesDB)
     searchBox.addEventListener('input', e => {
       const q = e.target.value.trim().toLowerCase();
       if(!moviesDB) return;
-      if(!q) return displayMovies(moviesDB);
-      displayMovies(moviesDB.filter(m => m.title.toLowerCase().includes(q)));
+      let list = moviesDB.slice();
+      if(showFavs && showFavs.checked) list = list.filter(m => favorites.has(m.title));
+      if(q) list = list.filter(m => ((m.title||'').toLowerCase().includes(q) || (m.plot||'').toLowerCase().includes(q)));
+      displayMovies(list);
     });
+
+    if(showFavs){
+      showFavs.addEventListener('change', () => {
+        const evt = new Event('input');
+        searchBox.dispatchEvent(evt);
+      });
+    }
 
     loadMovies();
   </script>
